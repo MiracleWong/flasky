@@ -1,20 +1,46 @@
 #!/usr/bin/env/python
 # -*- encoding: utf-8 -*-
+import os
 
 from flask import Flask, render_template, session, redirect, url_for, flash
 # from flask.ext.script import Manager, Server
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_wtf import FlaskForm
+from flask_sqlalchemy import SQLAlchemy
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required, DataRequired
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+print("basedir：", basedir)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
+app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///' + os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+
 # manager = Manager(app)
 # manager.add_command("runserver", Server(use_debugger=True))
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+db = SQLAlchemy(app)
+
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+
+    def __repr__(self):
+        return '<Role %r>' % self.name
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    
+    def __repr__(self):
+        return '<User %r>' % self.username
 
 
 class NameForm(FlaskForm):
@@ -27,7 +53,7 @@ def index():
     form = NameForm()
     if form.validate_on_submit():
         old_name = session.get('name')
-        if old_name != form.name.data:
+        if old_name is not None and old_name != form.name.data:
             flash('Looks like your have changed your name!')
         session['name'] = form.name.data
         return redirect(url_for('index'))
@@ -50,4 +76,3 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     app.run(debug=True)
-    # manager.run()
