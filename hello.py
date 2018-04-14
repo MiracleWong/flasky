@@ -42,7 +42,9 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 mail = Mail(app)
+
 
 
 class Role(db.Model):
