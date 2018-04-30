@@ -10,8 +10,8 @@ class Config:
     MAIL_PORT = 465
     MAIL_USE_SSL = True
     MAIL_USE_TLS = False
-    MAIL_USERNAME = 'example@qq.com'
-    MAIL_PASSWORD = 'password'
+    MAIL_USERNAME ='example@qq.com'
+    MAIL_PASSWORD ='password'
     FLASKY_MAIL_SENDER = 'Flasky Admin <example@qq.com>'
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
